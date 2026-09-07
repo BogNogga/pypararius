@@ -176,9 +176,19 @@ listing['deposit']          # Deposit amount
 listing['living_area']      # Living area in m²
 listing['rooms']            # Total number of rooms
 listing['bedrooms']         # Number of bedrooms
+listing['bathrooms']        # Number of bathrooms
 listing['interior']         # Interior type (furnished, etc.)
-listing['energy_label']     # Energy rating
+listing['energy_label']     # Energy rating (A–G)
+listing['year_built']       # Year of construction
+listing['object_type']      # 'house', 'apartment', etc.
 listing['description']      # Full description text
+```
+
+**Costs:**
+
+```python
+listing['deposit']          # Deposit amount
+listing['service_costs']    # Service costs (when listed separately)
 ```
 
 **Availability:**
@@ -186,12 +196,14 @@ listing['description']      # Full description text
 ```python
 listing['available']        # Available date
 listing['offered_since']    # When listed
+listing['date_posted']      # Listing date (ISO, from JSON-LD)
 listing['rental_agreement'] # Contract type
 ```
 
 **Location:**
 
 ```python
+listing['street']           # Street address (may be anonymised by Pararius)
 listing['coordinates']      # (lat, lng) tuple
 listing['latitude']         # Latitude
 listing['longitude']        # Longitude
@@ -231,13 +243,17 @@ listing['characteristics']  # Dict of all features
 
 | Alias | Canonical Key |
 |-------|---------------|
-| `name`, `address`, `street` | `title` |
+| `name` | `title` |
+| `address`, `full_address`, `street` | `street` |
 | `location`, `locality` | `city` |
 | `area`, `size`, `area_m2` | `living_area` |
 | `images`, `pictures`, `media` | `photos` |
 | `agent`, `realtor`, `makelaar` | `broker` |
 | `zip`, `zipcode`, `postal_code` | `postcode` |
 | `energy_rating` | `energy_label` |
+| `year`, `built`, `construction_year` | `year_built` |
+| `servicekosten` | `service_costs` |
+| `listed`, `posted` | `date_posted` |
 
 #### Methods
 

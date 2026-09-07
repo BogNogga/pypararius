@@ -20,7 +20,6 @@ class Listing:
 
     keys_alias = {
         'name': 'title',
-        'address': 'title',
         'location': 'city',
         'locality': 'city',
         'area': 'living_area',
@@ -44,7 +43,18 @@ class Listing:
         'realtor': 'broker',
         'makelaar': 'broker',
         'energy_rating': 'energy_label',
-        'street': 'title',
+        'street': 'street',
+        'address': 'street',
+        'full_address': 'street',
+        'year': 'year_built',
+        'built': 'year_built',
+        'construction_year': 'year_built',
+        'bathrooms': 'bathrooms',
+        'service_costs': 'service_costs',
+        'servicekosten': 'service_costs',
+        'listed': 'date_posted',
+        'date_posted': 'date_posted',
+        'posted': 'date_posted',
     }
 
     def __init__(self, listing_id: str | int | None = None, data: dict | None = None):

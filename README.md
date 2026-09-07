@@ -239,6 +239,15 @@ listing['url']              # Full Pararius URL
 listing['characteristics']  # Dict of all features
 ```
 
+**Search-result visibility** (populated by `search_listing`):
+
+```python
+listing['label']            # 'Highlighted', 'New', or None
+listing['featured']         # True when the agent pays for a boost
+listing['is_new']           # True for recently added listings
+listing['total_count']      # Total active listings for this search
+```
+
 **Key aliases** - these all work:
 
 | Alias | Canonical Key |

@@ -41,7 +41,52 @@ def parse_search_response(response_text: str, city: str) -> list[Listing]:
             if isinstance(results, str):
                 html = results
 
-    return parse_search_jsonld(html, city)
+    listings = parse_search_jsonld(html, city)
+
+    # Enrich with per-listing visibility badges and the search total count.
+    total_count = _extract_total_count(html)
+    badges = _extract_badges(html)
+    for listing in listings:
+        label = badges.get(listing.listing_id) if listing.listing_id else None
+        listing.data["label"] = label
+        listing.data["featured"] = label == "Highlighted"
+        listing.data["is_new"] = label == "New"
+        listing.data["total_count"] = total_count
+
+    return listings
+
+
+def _extract_total_count(html: str) -> Optional[int]:
+    """Extract the total number of active listings from the search header."""
+    match = re.search(r'search-list-header__count">([\d.,]+)</span>', html)
+    if not match:
+        return None
+    digits = match.group(1).replace(".", "").replace(",", "")
+    return int(digits) if digits.isdigit() else None
+
+
+def _extract_badges(html: str) -> dict[str, str]:
+    """Map listing ID -> visibility badge ('Highlighted' or 'New').
+
+    The badge lives in the listing-card HTML (``listing-label--featured`` /
+    ``listing-label--new``), not in the JSON-LD ItemList, so it is parsed
+    directly from the rendered search cards.
+    """
+    badges = {}
+    label_map = {"featured": "Highlighted", "new": "New"}
+    cards = re.split(r'<section\s+class="listing-search-item', html)[1:]
+    for card in cards:
+        url_match = re.search(r'href="(/[a-z-]+-for-(?:rent|sale)/[^"]+)"', card)
+        if not url_match:
+            continue
+        parts = url_match.group(1).rstrip("/").split("/")
+        if len(parts) < 2:
+            continue
+        listing_id = parts[-2]
+        label_match = re.search(r'listing-label listing-label--(\w+)', card)
+        label = label_map.get(label_match.group(1)) if label_match else None
+        badges[listing_id] = label
+    return badges
 
 
 def parse_search_jsonld(html: str, city: str) -> list[Listing]:
